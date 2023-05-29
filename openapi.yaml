@@ -1,93 +1,92 @@
 openapi: 3.0.1
 info:
-  title: TODO Plugin
-  description: A plugin that allows the user to create and manage a TODO list using ChatGPT. If you do not know the user's username, ask them first before making queries to the plugin. Otherwise, use the username "global".
+  title: Slip Advice Plugin
+  description: A plugin that allows the user to get random advice using ChatGPT.
   version: 'v1'
 servers:
+  - url: https://api.adviceslip.com
   - url: http://localhost:5003
 paths:
-  /todos/{username}:
+  /advice:
     get:
-      operationId: getTodos
-      summary: Get the list of todos
-      parameters:
-      - in: path
-        name: username
-        schema:
-            type: string
-        required: true
-        description: The name of the user.
+      operationId: getAdvice
+      summary: Get random advice
+      # parameters:
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getTodosResponse'
-    post:
-      operationId: addTodo
-      summary: Add a todo to the list
-      parameters:
-      - in: path
-        name: username
-        schema:
-            type: string
-        required: true
-        description: The name of the user.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/addTodoRequest'
-      responses:
-        "200":
-          description: OK
-    delete:
-      operationId: deleteTodo
-      summary: Delete a todo from the list
-      parameters:
-      - in: path
-        name: username
-        schema:
-            type: string
-        required: true
-        description: The name of the user.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/deleteTodoRequest'
-      responses:
-        "200":
-          description: OK
+                $ref: '#/components/schemas/getAdviceResponse'
+    # post:
+    #   operationId: addTodo
+    #   summary: Add a todo to the list
+    #   parameters:
+    #   - in: path
+    #     name: username
+    #     schema:
+    #         type: string
+    #     required: true
+    #     description: The name of the user.
+    #   requestBody:
+    #     required: true
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: '#/components/schemas/addTodoRequest'
+    #   responses:
+    #     "200":
+    #       description: OK
+    # delete:
+    #   operationId: deleteTodo
+    #   summary: Delete a todo from the list
+    #   parameters:
+    #   - in: path
+    #     name: username
+    #     schema:
+    #         type: string
+    #     required: true
+    #     description: The name of the user.
+    #   requestBody:
+    #     required: true
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: '#/components/schemas/deleteTodoRequest'
+    #   responses:
+    #     "200":
+    #       description: OK
 
 components:
   schemas:
-    getTodosResponse:
+    getAdviceResponse:
       type: object
       properties:
-        todos:
-          type: array
-          items:
-            type: string
-          description: The list of todos.
-    addTodoRequest:
-      type: object
-      required:
-      - todo
-      properties:
-        todo:
-          type: string
-          description: The todo to add to the list.
-          required: true
-    deleteTodoRequest:
-      type: object
-      required:
-      - todo_idx
-      properties:
-        todo_idx:
-          type: integer
-          description: The index of the todo to delete.
-          required: true
+        slip:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Random advice identificator.
+            advice:
+              type: string
+              description: Random advice.
+    # addTodoRequest:
+    #   type: object
+    #   required:
+    #   - todo
+    #   properties:
+    #     todo:
+    #       type: string
+    #       description: The todo to add to the list.
+    #       required: true
+    # deleteTodoRequest:
+    #   type: object
+    #   required:
+    #   - todo_idx
+    #   properties:
+    #     todo_idx:
+    #       type: integer
+    #       description: The index of the todo to delete.
+    #       required: true

@@ -1,5 +1,5 @@
 import json
-
+import httpx
 import quart
 import quart_cors
 from quart import request
@@ -20,6 +20,21 @@ async def add_todo(username):
 @app.get("/todos/<string:username>")
 async def get_todos(username):
     return quart.Response(response=json.dumps(_TODOS.get(username, [])), status=200)
+@app.get("/advice")
+async def get_advice():
+    try:
+        # Make a request to the external API service
+        async with httpx.AsyncClient() as client:
+            response = await client.get('https://api.adviceslip.com/advice')
+            response.raise_for_status()
+
+            # Forward the response back to the client
+            # print(response)
+            return quart.Response(response=json.dumps(response.json()), status=200)
+
+    except httpx.HTTPError as e:
+        return quart.Response(response=json.dumps({'error': str(e)}), status=500)
+    # return quart.Response(response='{"slip":{"id":1,"advice":"Get out and get some fresh air!"}}', status=200)
 
 @app.delete("/todos/<string:username>")
 async def delete_todo(username):
