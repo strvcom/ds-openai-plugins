@@ -1,11 +1,11 @@
 openapi: 3.0.1
 info:
   title: Slip Advice Plugin
-  description: A plugin that allows the user to get random advice using ChatGPT.
+  description: A plugin that allows the user to get advice using ChatGPT.
   version: 'v1'
 servers:
   - url: https://api.adviceslip.com
-  - url: http://localhost:5003
+  # - url: http://localhost:5003
 paths:
   /advice:
     get:
@@ -19,6 +19,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/getAdviceResponse'
+  /advice/search/{callback}:
+    get:
+      operationId: searchAdvice
+      summary: Search for advice matching specific word. Give user an option to get best advice meaning that you will pick first from list and get it by using it's id.
+      parameters:
+        - name: callback
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Term that advice must contain
+      # requestBody:
+      #   required: true
+      #   content:
+      #     application/json:
+      #       schema:
+      #         $ref: '#/components/schemas/searchQuery'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/searchAdviceResponse'
+  /advice/{slip_id}:
+    get:
+      operationId: getAdviceById
+      summary: Get selected advice by using identifier.
+      parameters:
+        - name: slip_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: Slip advice identifier.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getAdviceResponse'
+
     # post:
     #   operationId: addTodo
     #   summary: Add a todo to the list
@@ -72,6 +115,34 @@ components:
             advice:
               type: string
               description: Random advice.
+    searchAdviceResponse:
+      type: object
+      properties:
+        total_results:
+          type: integer
+          description: Number of advices matching query.
+        query:
+          type: string
+          description: Term for matching.
+        slips:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Matched advice identificator.
+              advice:
+                type: string
+                description: Matched advice.
+    searchQuery:
+      type: object
+      properties:
+        callback:
+          type: string
+          description: The term that advices must contain.
+      required:
+        - callback
     # addTodoRequest:
     #   type: object
     #   required:
